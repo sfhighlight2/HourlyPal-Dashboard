@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Users } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react'
 
 export default function LoginPage() {
   const [email, setEmail]       = useState('')
@@ -40,14 +40,11 @@ export default function LoginPage() {
 
           {/* Hero copy */}
           <div style={styles.heroSection}>
-            <div style={styles.heroIconWrap}>
-              <Users size={28} color="#00C4A7" />
-            </div>
             <h1 style={styles.heroTitle}>
-              Manage your platform with confidence.
+              Where clients find their perfect PAL.
             </h1>
             <p style={styles.heroSub}>
-              Monitor users, bookings, pals, and messages from one clean dashboard built for the HourlyPal team.
+              Verify PALs, track bookings, and keep the marketplace running smoothly — all in one place built for the HourlyPal team.
             </p>
           </div>
 
