@@ -4,30 +4,32 @@
  * Uses the SERVICE ROLE KEY to bypass all RLS policies.
  * NEVER import this in a 'use client' component or any client bundle.
  *
- * The client is created lazily on first use (not at module import time)
- * so Next.js build-time page-data collection doesn't require env vars.
+ * createClient() is deferred to the first request so Next.js
+ * build-time page-data collection never needs the env vars.
  */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 let _client: SupabaseClient | null = null
 
-function getAdminClient(): SupabaseClient {
+/** Returns the singleton admin client, creating it on first call. */
+export function getAdminClient(): SupabaseClient {
   if (_client) return _client
 
-  const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const serviceKey   = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (!supabaseUrl || !serviceKey) {
+  if (!url || !key) {
     throw new Error(
       '[supabase-admin] Missing env vars.\n' +
-      'Add NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to your Netlify environment variables.'
+      'Add NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY ' +
+      'to your Netlify environment variables.'
     )
   }
 
-  _client = createClient(supabaseUrl, serviceKey, {
+  _client = createClient(url, key, {
     auth: {
-      persistSession:    false,
-      autoRefreshToken:  false,
+      persistSession:     false,
+      autoRefreshToken:   false,
       detectSessionInUrl: false,
     },
   })
@@ -36,14 +38,13 @@ function getAdminClient(): SupabaseClient {
 }
 
 /**
- * Use this exactly like the regular supabase client:
+ * Convenience alias — use exactly like the regular supabase client:
  *   const { data } = await adminSupabase.from('profiles').select('*')
  *
+ * Explicitly typed as SupabaseClient so TypeScript is happy in all pages.
  * The real client is created on first property access, not at import time.
  */
-export const adminSupabase = new Proxy({} as SupabaseClient, {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get(_: unknown, prop: string | symbol): any {
-    return (getAdminClient() as any)[prop]
-  },
-})
+export const adminSupabase: SupabaseClient = new Proxy(
+  {} as unknown as SupabaseClient,
+  { get: (_target, prop) => getAdminClient()[prop as keyof SupabaseClient] }
+)
