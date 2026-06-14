@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { Sidebar } from '@/components/Sidebar'
 
 export const metadata: Metadata = {
   title: 'HourlyPal Admin Dashboard',
@@ -13,14 +12,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" style={{ colorScheme: 'dark' }}>
+    <html lang="en" style={{ colorScheme: 'light' }}>
       <body>
-        <div className="app-layout">
-          <Sidebar />
-          <main className="main-content">
-            {children}
-          </main>
-        </div>
+        {children}
       </body>
     </html>
   )
