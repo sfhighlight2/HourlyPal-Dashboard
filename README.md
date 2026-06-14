@@ -1,4 +1,27 @@
-# HourlyPal Admin Dashboard
+## Deployment (Netlify)
+
+This project is configured for **Netlify** with the `@netlify/plugin-nextjs` plugin.
+
+### Connect to Netlify
+
+1. Push this repo to GitHub (already done)
+2. In [Netlify Dashboard](https://app.netlify.com) → **Add new site → Import an existing project**
+3. Select `sfhighlight2/HourlyPal-Dashboard`
+4. Build settings are auto-detected from `netlify.toml`:
+   - **Build command:** `npm run build`
+   - **Publish directory:** `.next`
+
+### Set Environment Variables
+
+In **Netlify Dashboard → Site → Environment Variables**, add:
+
+| Variable | Value |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your anon/public key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Your service role key (server-side only) |
+
+> ⚠️ Mark `SUPABASE_SERVICE_ROLE_KEY` as a **sensitive** variable in Netlify. It is only used in server-side rendering and is never exposed to the browser.
 
 A read-only admin and team dashboard for the HourlyPal platform, built with **Next.js 16 App Router** and connected to Supabase.
 
