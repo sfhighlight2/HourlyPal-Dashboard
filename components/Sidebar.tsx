@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 const navItems = [
@@ -21,7 +22,14 @@ export function Sidebar() {
     <aside className="sidebar">
       {/* Logo */}
       <div className="sidebar-logo">
-        <div className="sidebar-logo-icon">⏱</div>
+        <Image
+          src="/logo.jpg"
+          alt="HourlyPal"
+          width={44}
+          height={44}
+          style={{ borderRadius: 10, flexShrink: 0 }}
+          priority
+        />
         <div className="sidebar-logo-text">
           <div className="sidebar-logo-name">HourlyPal</div>
           <div className="sidebar-logo-tag">Admin Panel</div>
