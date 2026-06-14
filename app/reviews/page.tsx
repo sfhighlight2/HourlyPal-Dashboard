@@ -3,7 +3,7 @@ import type { Review } from '@/lib/supabase'
 
 type ProfileSnippet = { id: string; alias: string; full_name: string; role: string }
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })

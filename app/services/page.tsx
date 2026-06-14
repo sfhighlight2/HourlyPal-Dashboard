@@ -1,7 +1,7 @@
 import { adminSupabase as supabase } from '@/lib/supabase-admin'
 import type { Service, ProfileService } from '@/lib/supabase'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 const SERVICE_ICONS: Record<string, string> = {
   airport_chauffer:   '✈️',

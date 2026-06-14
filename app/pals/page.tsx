@@ -1,7 +1,7 @@
 import { adminSupabase as supabase } from '@/lib/supabase-admin'
 import type { Profile, ProfileService, ProfileAvailability, ProfileLanguage } from '@/lib/supabase'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 

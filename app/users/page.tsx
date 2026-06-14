@@ -2,7 +2,7 @@ import { adminSupabase as supabase } from '@/lib/supabase-admin'
 import type { Profile } from '@/lib/supabase'
 import { UsersTable } from '@/components/UsersTable'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export default async function UsersPage() {
   const { data } = await supabase

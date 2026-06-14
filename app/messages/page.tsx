@@ -3,7 +3,7 @@ import type { Message } from '@/lib/supabase'
 
 type ProfileSnippet = { id: string; alias: string; full_name: string; role: string }
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleString('en-US', {

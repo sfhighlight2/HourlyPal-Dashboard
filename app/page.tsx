@@ -14,7 +14,7 @@ function getInitials(name: string, alias: string) {
   return n.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
 }
 
-export const revalidate = 60 // ISR — refresh every 60 seconds
+export const dynamic = 'force-dynamic'
 
 export default async function OverviewPage() {
   const stats = await getOverviewStats()

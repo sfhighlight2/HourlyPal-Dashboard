@@ -4,7 +4,7 @@ import { BookingsTable } from '@/components/BookingsTable'
 
 type ProfileSnippet = { id: string; alias: string; full_name: string; email: string; role: string }
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export default async function BookingsPage() {
   const [{ data: bookings }, { data: profiles }] = await Promise.all([
