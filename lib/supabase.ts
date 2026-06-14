@@ -1,7 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
+import { resolveSupabaseUrl } from '@/lib/supabase-url'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Falls back to deriving the URL from the anon key when the env URL is invalid.
+const supabaseUrl = resolveSupabaseUrl(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  supabaseAnonKey
+)
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
