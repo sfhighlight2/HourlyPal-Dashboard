@@ -1,31 +1,49 @@
 /**
- * Server-side Supabase admin client.
+ * Server-side Supabase admin client — lazy initialization.
  *
- * Uses the SERVICE ROLE KEY — bypasses all RLS policies.
- * NEVER import this in a 'use client' component or any file
- * that gets bundled for the browser. Server Components only.
+ * Uses the SERVICE ROLE KEY to bypass all RLS policies.
+ * NEVER import this in a 'use client' component or any client bundle.
+ *
+ * The client is created lazily on first use (not at module import time)
+ * so Next.js build-time page-data collection doesn't require env vars.
  */
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+let _client: SupabaseClient | null = null
 
-if (!serviceRoleKey) {
-  throw new Error(
-    'Missing SUPABASE_SERVICE_ROLE_KEY in .env.local — ' +
-    'add it to see all data in the admin dashboard.'
-  )
+function getAdminClient(): SupabaseClient {
+  if (_client) return _client
+
+  const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceKey   = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !serviceKey) {
+    throw new Error(
+      '[supabase-admin] Missing env vars.\n' +
+      'Add NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to your Netlify environment variables.'
+    )
+  }
+
+  _client = createClient(supabaseUrl, serviceKey, {
+    auth: {
+      persistSession:    false,
+      autoRefreshToken:  false,
+      detectSessionInUrl: false,
+    },
+  })
+
+  return _client
 }
 
 /**
- * Admin client — full read access across all tables.
- * Read-only by convention in this dashboard.
+ * Use this exactly like the regular supabase client:
+ *   const { data } = await adminSupabase.from('profiles').select('*')
+ *
+ * The real client is created on first property access, not at import time.
  */
-export const adminSupabase = createClient(supabaseUrl, serviceRoleKey, {
-  auth: {
-    // Disable auth helpers — we don't need session management server-side
-    persistSession: false,
-    autoRefreshToken: false,
-    detectSessionInUrl: false,
+export const adminSupabase = new Proxy({} as SupabaseClient, {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get(_: unknown, prop: string | symbol): any {
+    return (getAdminClient() as any)[prop]
   },
 })
