@@ -8,6 +8,7 @@
  * build-time page-data collection never needs the env vars.
  */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { resolveSupabaseUrl } from '@/lib/supabase-url'
 
 let _client: SupabaseClient | null = null
 
@@ -15,16 +16,17 @@ let _client: SupabaseClient | null = null
 export function getAdminClient(): SupabaseClient {
   if (_client) return _client
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (!url || !key) {
+  if (!key) {
     throw new Error(
-      '[supabase-admin] Missing env vars.\n' +
-      'Add NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY ' +
-      'to your Netlify environment variables.'
+      '[supabase-admin] Missing SUPABASE_SERVICE_ROLE_KEY.\n' +
+      'Add SUPABASE_SERVICE_ROLE_KEY to your Netlify environment variables.'
     )
   }
+
+  // Falls back to deriving the URL from the key when the env URL is invalid.
+  const url = resolveSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL, key)
 
   _client = createClient(url, key, {
     auth: {
